@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <title>Demo form generator</title>
+  </head>
+  <body>
+    <!-- Formularz walidowany -->
+    <h3>Form to validate</h3>
+    <form id="form-register" class="form" data-validate></form>
+
+    <!-- Formularz bez walidowacji -->
+    <h3>Form not validate</h3>
+    <form id="form-login" class="form"></form>
+    <script type="text/javascript">
+      /**
+       * Function to get dynamical script.
+       */
+      function getScript(source, callback) {
+        var script = document.createElement("script");
+        var prior = document.getElementsByTagName("script")[0];
+        script.async = 1;
+
+        script.onload = script.onreadystatechange = function (_, isAbort) {
+          if (
+            isAbort ||
+            !script.readyState ||
+            /loaded|complete/.test(script.readyState)
+          ) {
+            script.onload = script.onreadystatechange = null;
+            script = undefined;
+
+            if (!isAbort && callback) setTimeout(callback, 0);
+          }
+        };
+
+        script.src = source;
+        prior.parentNode.insertBefore(script, prior);
+      }
+
+      window.onload = function () {
+        FormValidator.initialize();
+        getScript("FormGenerator.js", function () {
+          /* Scheme for registration form */
+          const schemeRegistrationForm = [
+            {
+              id: "fr-email",
+              type: "email",
+              name: "email",
+              label: "Adres e-mail",
+              required: true,
+              autofocus: true,
+            },
+            {
+              id: "fr-password",
+              type: "password",
+              name: "password",
+              label: "Hasło",
+              required: true,
+            },
+            {
+              id: "fr-password_confirmation",
+              type: "password",
+              name: "password_confirmation",
+              label: "Powtórz hasło",
+              required: true,
+            },
+            {
+              type: "reset",
+              label: "Wyczyść",
+            },
+            {
+              type: "submit",
+              label: "Zarejestruj",
+            },
+          ];
+
+          /* Create form of registration */
+          const formRegistrationGenerator = FormGenerator.initialize(
+            "form-register",
+            schemeRegistrationForm
+          );
+          formRegistrationGenerator.handleBulidDynamicForm();
+          formRegistrationGenerator.handleOnLoadForm(() => {
+            console.log('form loaded');
+          });
+          formRegistrationGenerator.handleOnSubmitForm((form, params) => {
+            console.log("submit form", form, params);
+          });
+
+          const schemeLoginForm = [
+            {
+              id: "fl-email",
+              type: "email",
+              name: "email",
+              label: "Adres e-mail",
+              autofocus: true,
+            },
+            {
+              id: "fl-password",
+              type: "password",
+              name: "password",
+              label: "Hasło",
+            },
+            {
+              type: "submit",
+              label: "Zaloguj",
+            },
+          ];
+          /* Create form of login */
+          const formLoginGenerator = FormGenerator.initialize(
+            "form-login",
+            schemeLoginForm
+          );
+          formLoginGenerator.handleBulidDynamicForm();
+        });
+      };
+    </script>
+  </body>
+</html>

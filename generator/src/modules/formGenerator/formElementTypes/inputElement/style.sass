@@ -1,0 +1,22 @@
+.formElementInput
+  display: flex
+  padding: 15px 10px
+  align-items: center
+  &__label
+    min-width: 120px
+    display: inline-block
+  &__input
+    padding: 10px
+    outline: none
+    position: relative
+    border: 1px solid #d9d9d9
+  &__input--error
+    border: 1px solid #c0392b
+    + .formElementInput__error
+      display: inline-block
+  &__required
+    color: #c0392b
+  &__error
+    display: none
+    color: #c0392b
+    padding: 0px 0px 0px 5px
