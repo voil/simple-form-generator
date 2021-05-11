@@ -14,7 +14,11 @@ export class ObserverEventsForm {
    * @param Function event
    */
   attachEvent(nameOfNotify = "", eventToFire = () => {}) {
-    this.__observerMapOfNotifications[nameOfNotify] = eventToFire;
+    if(eventToFire instanceof Function) {
+      console.warn('EventToFire is not a callback function');
+    } else {
+      this.__observerMapOfNotifications[nameOfNotify] = eventToFire;
+    }
   }
 
   /**

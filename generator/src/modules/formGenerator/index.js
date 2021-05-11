@@ -12,12 +12,6 @@ class FormGenerator {
   __instanceForm = null;
 
   /**
-   * @var Function
-   * Reference to form element.
-   */
-  __callbackWhen = null;
-
-  /**
    * @var Object
    * Object of scheme generator.
    */
@@ -64,7 +58,7 @@ class FormGenerator {
    * Public method to fire callback when form generated.
    * @throw Error
    */
-  handleOnLoadForm(callback = (instanceForm) => {}) {
+  onLoad(callback = (instanceForm) => {}) {
     window.ObserverEventsForm.attachEvent(
       `handleFireEventFormLoaded_${this.__instanceForm.id}`,
       callback
@@ -73,15 +67,19 @@ class FormGenerator {
 
   /**
    * Public method to fire when submit event generated.
+   * @param Function callback
    * @throw Error
    */
-  handleOnSubmitForm(callback = (instanceForm, paramForm) => {}) {
+  onSubmit(callback = (instanceForm, paramForm) => {}) {
     window.ObserverEventsForm.attachEvent(
       `handleFireEventSubmitForm_${this.__instanceForm.id}`,
       callback
     );
   }
 
+  /**
+   * Private method to stop submit form.
+   */
   __handleStopSubmitForm() {
     if (
       (window.FormValidatorInitializeted &&

@@ -79,15 +79,15 @@
           ];
 
           /* Create form of registration */
-          const formRegistrationGenerator = FormGenerator.initialize(
+          const registrationForm = FormGenerator.initialize(
             "form-register",
             schemeRegistrationForm
           );
-          formRegistrationGenerator.handleBulidDynamicForm();
-          formRegistrationGenerator.handleOnLoadForm(() => {
+          registrationForm.handleBulidDynamicForm();
+          registrationForm.onLoad(() => {
             console.log('form loaded');
           });
-          formRegistrationGenerator.handleOnSubmitForm((form, params) => {
+          registrationForm.onSubmit((form, params) => {
             console.log("submit form", form, params);
           });
 
@@ -111,11 +111,11 @@
             },
           ];
           /* Create form of login */
-          const formLoginGenerator = FormGenerator.initialize(
+          const loginForm = FormGenerator.initialize(
             "form-login",
             schemeLoginForm
           );
-          formLoginGenerator.handleBulidDynamicForm();
+          loginForm.handleBulidDynamicForm();
         });
       };
     </script>

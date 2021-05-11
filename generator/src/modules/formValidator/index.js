@@ -12,6 +12,17 @@ class FormValidator {
   }
 
   /**
+   * Private method to catch form validate.
+   */
+  __catchAllFormToValidate() {
+    document.getElementsByTagName("form").forEach((currentForm) => {
+      if (currentForm.hasAttribute("data-validate")) {
+        this.__stopSubmitForm(currentForm);
+      }
+    });
+  }
+
+  /**
    * Private method to stop submit form.
    * @param HtmlFormElement currentForm
    */
@@ -34,22 +45,6 @@ class FormValidator {
       },
       true
     );
-  }
-
-  /**
-   * Private method to get params element form.
-   * @param HtmlFormElement currentForm
-   * @return Object
-   */
-  __getElementsParamsForm(currentForm = null) {
-    const currentParamsForm = {};
-    [...currentForm.getElementsByTagName("input")].forEach(
-      (currentInputElement) => {
-        currentParamsForm[currentInputElement.getAttribute("name")] =
-          currentInputElement.value;
-      }
-    );
-    return currentParamsForm;
   }
 
   /**
@@ -77,6 +72,21 @@ class FormValidator {
     if (currentForm.isValidate) {
       this.__submitForm(currentForm, this.__getElementsParamsForm(currentForm));
     }
+  }
+
+  /**
+   * Private method to rise input events.
+   * @param HtmlInputElement currentInputElement
+   */
+  __addRiseInputEvent(currentInputElement) {
+    if (currentInputElement.oninput) {
+      return;
+    }
+    currentInputElement.oninput = function () {
+      this.className = `formElementInput__input ${
+        this.value.trim() === "" ? "formElementInput__input--error" : ""
+      }`;
+    };
   }
 
   /**
@@ -120,29 +130,19 @@ class FormValidator {
   }
 
   /**
-   * Private method to rise input events.
-   * @param HtmlInputElement currentInputElement
+   * Private method to get params element form.
+   * @param HtmlFormElement currentForm
+   * @return Object
    */
-  __addRiseInputEvent(currentInputElement) {
-    if (currentInputElement.oninput) {
-      return;
-    }
-    currentInputElement.oninput = function () {
-      this.className = `formElementInput__input ${
-        this.value.trim() === "" ? "formElementInput__input--error" : ""
-      }`;
-    };
-  }
-
-  /**
-   * Private method to catch form validate.
-   */
-  __catchAllFormToValidate() {
-    document.getElementsByTagName("form").forEach((currentForm) => {
-      if (currentForm.hasAttribute("data-validate")) {
-        this.__stopSubmitForm(currentForm);
+  __getElementsParamsForm(currentForm = null) {
+    const currentParamsForm = {};
+    [...currentForm.getElementsByTagName("input")].forEach(
+      (currentInputElement) => {
+        currentParamsForm[currentInputElement.getAttribute("name")] =
+          currentInputElement.value;
       }
-    });
+    );
+    return currentParamsForm;
   }
 }
 

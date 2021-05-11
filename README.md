@@ -13,12 +13,12 @@ Form generator object initialization:
 
 ##### The form is not validable:
 ##
-```javascript
+```html
 <script src="dist/FormGenerator.js.gz" type="text/javascript"></script>
 
-<form id="form-register" class="form" ></form>
+<form id="form-logim" class="form" ></form>
 <script type="text/javascript">
-const schemeRegistrationForm = [
+const schemeLoginForm = [
     {
       id: "fr-email",
       type: "email",
@@ -28,33 +28,36 @@ const schemeRegistrationForm = [
     },
     {
       type: "submit",
-      label: "Zarejestruj",
+      label: "Zaloguj",
     },
 ];
 
 // Initialization method.
-const formRegistrationGenerator = FormGenerator.initialize(
-    "form-register",
-    schemeRegistrationForm
+const loginForm = FormGenerator.initialize(
+    "form-login",
+    schemeLoginForm
 );
 
 // Form building method.
-formRegistrationGenerator.handleBulidDynamicForm();
+loginForm.handleBulidDynamicForm();
 
 // Method fired when the form is built.
-formRegistrationGenerator.handleOnLoadForm((form) => {
+// The "form" variable is a reference to the constructed form
+loginForm.handleOnLoadForm((form) => {
     console.log('form loaded');
 });
 
 // Method fired after calling the save form.
-formRegistrationGenerator.handleOnSubmitForm((form, params) => {
+// The "form" variable is a reference to the constructed form
+// The "params" variable is an input value object from the form
+loginForm.handleOnSubmitForm((form, params) => {
     console.log("submit form", form, params);
 });
 </script>
 ```
 ##### Validable form:
 ##
-```javascript
+```html
 <script src="dist/FormGenerator.js.gz" type="text/javascript"></script>
 <script src="dist/FormValidator.js.gz" type="text/javascript"></script>
 
@@ -79,20 +82,23 @@ const schemeRegistrationForm = [
 ];
 
 // Initialization method.
-const formRegistrationGenerator = FormGenerator.initialize(
+const registrationForm = FormGenerator.initialize(
     "form-register",
     schemeRegistrationForm
 );
 
 // Form building method.
-formRegistrationGenerator.handleBulidDynamicForm();
+registrationForm.handleBulidDynamicForm();
 // Method fired when the form is built.
-formRegistrationGenerator.handleOnLoadForm((form) => {
+// The "form" variable is a reference to the constructed form
+registrationForm.handleOnLoadForm((form) => {
     console.log('form loaded');
 });
 
 // Method fired after calling the save form.
-formRegistrationGenerator.handleOnSubmitForm((form, params) => {
+// The "form" variable is a reference to the constructed form
+// The "params" variable is an input value object from the form
+registrationForm.handleOnSubmitForm((form, params) => {
     console.log("submit form", form, params);
 });
 </script>
