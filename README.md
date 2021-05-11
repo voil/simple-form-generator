@@ -43,14 +43,14 @@ loginForm.handleBulidDynamicForm();
 
 // Method fired when the form is built.
 // The "form" variable is a reference to the constructed form
-loginForm.handleOnLoadForm((form) => {
+loginForm.onLoad((form) => {
     console.log('form loaded');
 });
 
 // Method fired after calling the save form.
 // The "form" variable is a reference to the constructed form
 // The "params" variable is an input value object from the form
-loginForm.handleOnSubmitForm((form, params) => {
+loginForm.onSubmit((form, params) => {
     console.log("submit form", form, params);
 });
 </script>
@@ -91,14 +91,14 @@ const registrationForm = FormGenerator.initialize(
 registrationForm.handleBulidDynamicForm();
 // Method fired when the form is built.
 // The "form" variable is a reference to the constructed form
-registrationForm.handleOnLoadForm((form) => {
+registrationForm.onLoad((form) => {
     console.log('form loaded');
 });
 
 // Method fired after calling the save form.
 // The "form" variable is a reference to the constructed form
 // The "params" variable is an input value object from the form
-registrationForm.handleOnSubmitForm((form, params) => {
+registrationForm.onSubmit((form, params) => {
     console.log("submit form", form, params);
 });
 </script>

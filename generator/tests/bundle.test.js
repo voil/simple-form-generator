@@ -2983,8 +2983,8 @@ Object(jest_without_globals__WEBPACK_IMPORTED_MODULE_3__["describe"])("Test form
             mockFn = jest.fn(function () {});
             formInstance = Object(_src_modules_formGenerator_index_js__WEBPACK_IMPORTED_MODULE_4__["initialize"])("form-register", schemeForm);
             formInstance.handleBulidDynamicForm();
-            formInstance.handleOnSubmitForm(mockFn);
-            formInstance.handleOnLoadForm(function (form) {
+            formInstance.onSubmit(mockFn);
+            formInstance.onLoad(function (form) {
               var buttonsElements = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(form.getElementsByTagName("button"));
 
               buttonsElements[0].click();
@@ -3001,7 +3001,7 @@ Object(jest_without_globals__WEBPACK_IMPORTED_MODULE_3__["describe"])("Test form
   Object(jest_without_globals__WEBPACK_IMPORTED_MODULE_3__["it"])("should have generate form.", function () {
     var formInstance = Object(_src_modules_formGenerator_index_js__WEBPACK_IMPORTED_MODULE_4__["initialize"])("form-register", schemeForm);
     formInstance.handleBulidDynamicForm();
-    formInstance.handleOnLoadForm(function (form) {
+    formInstance.onLoad(function (form) {
       var inputsElements = _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(form.getElementsByTagName("input"));
 
       Object(jest_without_globals__WEBPACK_IMPORTED_MODULE_3__["expect"])(inputsElements.length).toEqual(1);
@@ -4031,11 +4031,6 @@ var FormGenerator = /*#__PURE__*/function () {
    */
 
   /**
-   * @var Function
-   * Reference to form element.
-   */
-
-  /**
    * @var Object
    * Object of scheme generator.
    */
@@ -4057,8 +4052,6 @@ var FormGenerator = /*#__PURE__*/function () {
     _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, FormGenerator);
 
     _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_4___default()(this, "__instanceForm", null);
-
-    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_4___default()(this, "__callbackWhen", null);
 
     _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_4___default()(this, "__formSchemeToGenerate", []);
 
@@ -4096,22 +4089,27 @@ var FormGenerator = /*#__PURE__*/function () {
      */
 
   }, {
-    key: "handleOnLoadForm",
-    value: function handleOnLoadForm() {
+    key: "onLoad",
+    value: function onLoad() {
       var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function (instanceForm) {};
       window.ObserverEventsForm.attachEvent("handleFireEventFormLoaded_".concat(this.__instanceForm.id), callback);
     }
     /**
      * Public method to fire when submit event generated.
+     * @param Function callback
      * @throw Error
      */
 
   }, {
-    key: "handleOnSubmitForm",
-    value: function handleOnSubmitForm() {
+    key: "onSubmit",
+    value: function onSubmit() {
       var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function (instanceForm, paramForm) {};
       window.ObserverEventsForm.attachEvent("handleFireEventSubmitForm_".concat(this.__instanceForm.id), callback);
     }
+    /**
+     * Private method to stop submit form.
+     */
+
   }, {
     key: "__handleStopSubmitForm",
     value: function __handleStopSubmitForm() {
@@ -6009,7 +6007,12 @@ var ObserverEventsForm = /*#__PURE__*/function () {
     function attachEvent() {
       var nameOfNotify = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
       var eventToFire = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-      this.__observerMapOfNotifications[nameOfNotify] = eventToFire;
+
+      if (!eventToFire instanceof Function) {
+        console.warn('EventToFire is not a callback function');
+      } else {
+        this.__observerMapOfNotifications[nameOfNotify] = eventToFire;
+      }
     }
     /**
      * Public method to check is attached event.
@@ -6194,15 +6197,30 @@ var FormValidator = /*#__PURE__*/function () {
     this.__catchAllFormToValidate();
   }
   /**
-   * Private method to stop submit form.
-   * @param HtmlFormElement currentForm
+   * Private method to catch form validate.
    */
 
 
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(FormValidator, [{
+    key: "__catchAllFormToValidate",
+    value: function __catchAllFormToValidate() {
+      var _this = this;
+
+      document.getElementsByTagName("form").forEach(function (currentForm) {
+        if (currentForm.hasAttribute("data-validate")) {
+          _this.__stopSubmitForm(currentForm);
+        }
+      });
+    }
+    /**
+     * Private method to stop submit form.
+     * @param HtmlFormElement currentForm
+     */
+
+  }, {
     key: "__stopSubmitForm",
     value: function __stopSubmitForm() {
-      var _this = this;
+      var _this2 = this;
 
       var currentForm = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       var typeOfSubmit = currentForm.addEventListener ? {
@@ -6215,26 +6233,8 @@ var FormValidator = /*#__PURE__*/function () {
       currentForm[typeOfSubmit.methodName](typeOfSubmit.eventName, function (event) {
         event.preventDefault();
 
-        _this.__checkIsFormValidate(currentForm);
+        _this2.__checkIsFormValidate(currentForm);
       }, true);
-    }
-    /**
-     * Private method to get params element form.
-     * @param HtmlFormElement currentForm
-     * @return Object
-     */
-
-  }, {
-    key: "__getElementsParamsForm",
-    value: function __getElementsParamsForm() {
-      var currentForm = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-      var currentParamsForm = {};
-
-      _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(currentForm.getElementsByTagName("input")).forEach(function (currentInputElement) {
-        currentParamsForm[currentInputElement.getAttribute("name")] = currentInputElement.value;
-      });
-
-      return currentParamsForm;
     }
     /**
      * Private method to check is form validate.
@@ -6244,7 +6244,7 @@ var FormValidator = /*#__PURE__*/function () {
   }, {
     key: "__checkIsFormValidate",
     value: function __checkIsFormValidate() {
-      var _this2 = this;
+      var _this3 = this;
 
       var currentForm = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       currentForm.isValidate = true;
@@ -6252,9 +6252,9 @@ var FormValidator = /*#__PURE__*/function () {
       _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(currentForm.getElementsByTagName("input")).filter(function (currentElement) {
         return currentElement.hasAttribute("data-required");
       }).forEach(function (currentInputElement) {
-        _this2.__addRiseInputEvent(currentInputElement);
+        _this3.__addRiseInputEvent(currentInputElement);
 
-        _this2.__setErrorWarningElement(currentInputElement);
+        _this3.__setErrorWarningElement(currentInputElement);
 
         currentForm.isValidate = currentInputElement.value.trim() === "" ? false : currentForm.isValidate;
         currentInputElement.className = "formElementInput__input ".concat(currentInputElement.value.trim() === "" ? "formElementInput__input--error" : "");
@@ -6263,6 +6263,22 @@ var FormValidator = /*#__PURE__*/function () {
       if (currentForm.isValidate) {
         this.__submitForm(currentForm, this.__getElementsParamsForm(currentForm));
       }
+    }
+    /**
+     * Private method to rise input events.
+     * @param HtmlInputElement currentInputElement
+     */
+
+  }, {
+    key: "__addRiseInputEvent",
+    value: function __addRiseInputEvent(currentInputElement) {
+      if (currentInputElement.oninput) {
+        return;
+      }
+
+      currentInputElement.oninput = function () {
+        this.className = "formElementInput__input ".concat(this.value.trim() === "" ? "formElementInput__input--error" : "");
+      };
     }
     /**
      * Private method to attach error warning element.
@@ -6297,35 +6313,22 @@ var FormValidator = /*#__PURE__*/function () {
       }
     }
     /**
-     * Private method to rise input events.
-     * @param HtmlInputElement currentInputElement
+     * Private method to get params element form.
+     * @param HtmlFormElement currentForm
+     * @return Object
      */
 
   }, {
-    key: "__addRiseInputEvent",
-    value: function __addRiseInputEvent(currentInputElement) {
-      if (currentInputElement.oninput) {
-        return;
-      }
+    key: "__getElementsParamsForm",
+    value: function __getElementsParamsForm() {
+      var currentForm = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var currentParamsForm = {};
 
-      currentInputElement.oninput = function () {
-        this.className = "formElementInput__input ".concat(this.value.trim() === "" ? "formElementInput__input--error" : "");
-      };
-    }
-    /**
-     * Private method to catch form validate.
-     */
-
-  }, {
-    key: "__catchAllFormToValidate",
-    value: function __catchAllFormToValidate() {
-      var _this3 = this;
-
-      document.getElementsByTagName("form").forEach(function (currentForm) {
-        if (currentForm.hasAttribute("data-validate")) {
-          _this3.__stopSubmitForm(currentForm);
-        }
+      _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(currentForm.getElementsByTagName("input")).forEach(function (currentInputElement) {
+        currentParamsForm[currentInputElement.getAttribute("name")] = currentInputElement.value;
       });
+
+      return currentParamsForm;
     }
   }]);
 

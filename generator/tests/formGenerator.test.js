@@ -27,9 +27,9 @@ describe("Test formGenerator methods.", () => {
 
     const formInstance = initializeGenerator("form-register", schemeForm);
     formInstance.handleBulidDynamicForm();
-    formInstance.handleOnSubmitForm(mockFn);
+    formInstance.onSubmit(mockFn);
 
-    formInstance.handleOnLoadForm((form) => {
+    formInstance.onLoad((form) => {
       const buttonsElements = [...form.getElementsByTagName("button")];
       buttonsElements[0].click();
 
@@ -41,7 +41,7 @@ describe("Test formGenerator methods.", () => {
     const formInstance = initializeGenerator("form-register", schemeForm);
     formInstance.handleBulidDynamicForm();
 
-    formInstance.handleOnLoadForm((form) => {
+    formInstance.onLoad((form) => {
       const inputsElements = [...form.getElementsByTagName("input")];
       expect(inputsElements.length).toEqual(1);
 
